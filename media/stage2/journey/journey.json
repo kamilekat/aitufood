@@ -1,0 +1,88 @@
+{
+  "url": "https://aitufood.web.app/",
+  "ranAt": "2026-11-01T15:30:21.295Z",
+  "cancelledOrder": "1153",
+  "order": "1154",
+  "confirmMs": 998,
+  "dashboardMs": 20,
+  "soldOutHidden": true,
+  "steps": [
+    {
+      "file": "S01_home.png",
+      "caption": "Student opens aitufood.web.app: the public home page explains the service; Sign in and Register are in the header."
+    },
+    {
+      "file": "S02_register_rejected.png",
+      "caption": "Register form: a non-AITU e-mail is rejected before any account is created (R1)."
+    },
+    {
+      "file": "S03_sign_in.png",
+      "caption": "Sign in with the AITU e-mail and password (demo student account)."
+    },
+    {
+      "file": "S04_menu.png",
+      "caption": "The menu loads from Firestore: category photos, dish names, prices; only dishes on sale are shown (R2)."
+    },
+    {
+      "file": "C01_dashboard.png",
+      "caption": "Café staff sign in and see the live dashboard of the ordering day: New, Cooking, Ready columns and day totals (R8)."
+    },
+    {
+      "file": "S05_cart_slot.png",
+      "caption": "Student adds dishes (quantity 2 for one), chooses a free 10-minute pickup slot; the bar shows item count and total (R3, R4)."
+    },
+    {
+      "file": "S06_order_placed.png",
+      "caption": "Order #1153 is saved with a unique number; the student is told it can be cancelled within 30 seconds (R5)."
+    },
+    {
+      "file": "S07_my_orders_cancel.png",
+      "caption": "My orders: #1153 has status New and a \"Cancel order\" button with a 30-second countdown."
+    },
+    {
+      "file": "S08_cancelled.png",
+      "caption": "The student cancels #1153 within 30 s: status Cancelled, the place in the slot is given back."
+    },
+    {
+      "file": "C02_cancel_notice.png",
+      "caption": "The café dashboard shows \"Order #1153 was cancelled by the student\" without a page refresh."
+    },
+    {
+      "file": "C03_new_order.png",
+      "caption": "Order #1154 appears in the New column with a \"New order received\" notice and a highlighted card, without a refresh (R8)."
+    },
+    {
+      "file": "S09_cooking.png",
+      "caption": "Staff press \"Start cooking\"; the student's My orders shows #1154 as Cooking at once (R6)."
+    },
+    {
+      "file": "C04_ready_column.png",
+      "caption": "#1154 moved to the Ready column after \"Mark ready\"."
+    },
+    {
+      "file": "S10_ready.png",
+      "caption": "The student sees \"Your order #1154 is ready. Pick it up at the café counter.\" (R6, R7 in-app notice)."
+    },
+    {
+      "file": "S11_picked_up.png",
+      "caption": "After pickup the order is closed: status Picked up, progress bar complete."
+    },
+    {
+      "file": "C05_daily_report.png",
+      "caption": "Daily report for the café: orders per pickup slot and the top 5 dishes of the day (R10)."
+    },
+    {
+      "file": "C06_sold_out.png",
+      "caption": "Menu editor: staff mark \"Olivier salad\" as Sold out (R9)."
+    },
+    {
+      "file": "S12_sold_out_hidden.png",
+      "caption": "The student menu no longer lists \"Olivier salad\" (Salads section), without a refresh."
+    },
+    {
+      "file": "C07_dish_added.png",
+      "caption": "Menu editor: staff add a new dish \"Kuyrdak with potatoes\", 2 300 ₸, in Main dishes (R9)."
+    }
+  ],
+  "errors": []
+}

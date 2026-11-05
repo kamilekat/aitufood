@@ -1,0 +1,26 @@
+{
+  "url": "https://aitufood.web.app/",
+  "measuredAt": "2026-10-24T11:45:46.610Z",
+  "throttling": "Fast 4G (puppeteer PredefinedNetworkConditions), cache disabled, 360x780 @2x",
+  "requests": 22,
+  "transferredKB": 49407,
+  "imageRequests": 11,
+  "imageKB": 49259,
+  "loadEventMs": 506,
+  "finishMs": 51653,
+  "scrollWidthAt360": 360,
+  "largest": [
+    "9787 KB  Image  https://aitufood.web.app/img/categories/salads.jpg",
+    "7304 KB  Image  https://aitufood.web.app/img/categories/soups.jpg",
+    "6030 KB  Image  https://aitufood.web.app/img/categories/grill.jpg",
+    "5873 KB  Image  https://aitufood.web.app/img/categories/fastfood.jpg",
+    "5416 KB  Image  https://aitufood.web.app/img/categories/sides.jpg",
+    "4269 KB  Image  https://aitufood.web.app/img/categories/pastries.jpg",
+    "3724 KB  Image  https://aitufood.web.app/img/categories/drinks.jpg",
+    "3335 KB  Image  https://aitufood.web.app/img/categories/breakfast.jpg",
+    "1931 KB  Image  https://aitufood.web.app/img/categories/mains.jpg",
+    "1589 KB  Image  https://aitufood.web.app/img/categories/desserts.jpg",
+    "142 KB  Script  https://aitufood.web.app/assets/index-CV20FqQm.js",
+    "4 KB  Stylesheet  https://aitufood.web.app/assets/index-DYeG_7Oe.css"
+  ]
+}

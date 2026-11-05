@@ -1,0 +1,52 @@
+[
+  {
+    "category": "Soups",
+    "lightestLuminance": 0.0918,
+    "contrast": 7.4
+  },
+  {
+    "category": "Main dishes",
+    "lightestLuminance": 0.1072,
+    "contrast": 6.68
+  },
+  {
+    "category": "Salads",
+    "lightestLuminance": 0.0348,
+    "contrast": 12.38
+  },
+  {
+    "category": "Pastries",
+    "lightestLuminance": 0.0912,
+    "contrast": 7.44
+  },
+  {
+    "category": "Drinks",
+    "lightestLuminance": 0.0769,
+    "contrast": 8.27
+  },
+  {
+    "category": "Desserts",
+    "lightestLuminance": 0.0965,
+    "contrast": 7.17
+  },
+  {
+    "category": "Breakfast",
+    "lightestLuminance": 0.1116,
+    "contrast": 6.5
+  },
+  {
+    "category": "Side dishes",
+    "lightestLuminance": 0.0601,
+    "contrast": 9.54
+  },
+  {
+    "category": "Grill",
+    "lightestLuminance": 0.0335,
+    "contrast": 12.58
+  },
+  {
+    "category": "Fast food",
+    "lightestLuminance": 0.1072,
+    "contrast": 6.68
+  }
+]

@@ -1,0 +1,87 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>AituFood smart pickup point: four IoT layers</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:-apple-system, "Helvetica Neue", Arial, sans-serif; color:#1f2328; }
+  #c { width:1440px; height:860px; padding:22px 40px; }
+  h1 { margin:0 0 4px; font-size:27px; font-weight:600; }
+  .sub { font-size:17px; color:#5b6168; margin-bottom:18px; }
+  .layer { display:flex; align-items:stretch; gap:16px; }
+  .label { width:190px; flex:none; padding-top:10px; }
+  .label b { display:block; font-size:20px; }
+  .label span { font-size:15px; color:#5b6168; }
+  .row { flex:1; display:flex; gap:14px; }
+  .box { flex:1; border:2px solid #c9cbc4; border-radius:12px; background:#fff; padding:12px 14px; }
+  .box > b { display:block; font-size:19px; margin-bottom:4px; }
+  .box span { font-size:15.5px; line-height:1.4; display:block; }
+  .new { border-color:#c2410c; border-style:dashed; border-width:3px; background:#fff8f3; }
+  .db { background:#d6e1ee; border-color:#2f6fd6; border-width:3px; }
+  .grey { background:#f3f3f1; }
+  .arrow { display:flex; align-items:center; gap:16px; height:58px; }
+  .arrow .line { margin-left:190px; padding-left:16px; display:flex; align-items:center; gap:12px; font-size:15px; color:#3b4046; }
+  .arrow svg { flex:none; }
+  .legend { margin-top:18px; display:flex; gap:22px; font-size:15px; color:#3b4046; align-items:center; }
+  .sw { display:inline-block; width:26px; height:16px; border-radius:4px; vertical-align:middle; margin-right:6px; }
+  code { font-family:Menlo, Consolas, monospace; font-size:14px; background:#eef1f5; padding:1px 4px; border-radius:4px; }
+</style></head>
+<body><div id="c">
+<h1>Smart extension: QR pickup point at the café counter (four IoT layers)</h1>
+<div class="sub">The student shows a one-time QR code; the counter device checks it and closes the order in the existing Firestore database.</div>
+
+<div class="layer">
+  <div class="label"><b>1. Device / sensor</b><span>at the café counter</span></div>
+  <div class="row">
+    <div class="box new"><b>Pickup point (new)</b><span>ESP32-S3 microcontroller + GM65 QR scanner module, small screen, green/red LED and buzzer. About USD 30. Powered by USB.</span></div>
+    <div class="box new"><b>What it reads</b><span>Only the QR code text: a random 8-character <code>pickupCode</code> + order ID. No camera image is stored; no name or e-mail is in the code.</span></div>
+    <div class="box grey"><b>Student's phone (existing)</b><span>My orders shows the QR code when the order is <b>Ready</b>.</span></div>
+  </div>
+</div>
+
+<div class="arrow"><div class="line">
+  <svg width="22" height="44"><line x1="11" y1="2" x2="11" y2="40" stroke="#8d8f87" stroke-width="2"/><path d="M4,32 L11,42 L18,32" fill="#8d8f87"/></svg>
+  one scan event (~150 bytes) per pickup + a heartbeat every 60 s
+</div></div>
+
+<div class="layer">
+  <div class="label"><b>2. Network</b><span>how data travels</span></div>
+  <div class="row">
+    <div class="box"><b>AITU campus Wi-Fi (2.4 GHz)</b><span>The device joins a separate IoT network (VLAN) with WPA2; no access to students' devices.</span></div>
+    <div class="box"><b>HTTPS / TLS 1.2+ to Google Cloud</b><span>Firestore REST API, same encryption in transit as the web app (Assignment 3).</span></div>
+    <div class="box"><b>If Wi-Fi is down</b><span>The device keeps up to 200 scans in flash memory and sends them later; staff can still press <b>Picked up</b> on the tablet.</span></div>
+  </div>
+</div>
+
+<div class="arrow"><div class="line">
+  <svg width="22" height="44"><line x1="11" y1="2" x2="11" y2="40" stroke="#8d8f87" stroke-width="2"/><path d="M4,32 L11,42 L18,32" fill="#8d8f87"/></svg>
+  signed in as a device account (role <code>device</code>, custom claim set by the admin script)
+</div></div>
+
+<div class="layer">
+  <div class="label"><b>3. Cloud / processing</b><span>Firebase project “aitufood”</span></div>
+  <div class="row">
+    <div class="box"><b>Firebase Authentication</b><span>Account <code>pickup-point-1</code> with role <code>device</code>; the key can be revoked at any time.</span></div>
+    <div class="box"><b>Security Rules (decide)</b><span>A device may only: set an order from <b>ready</b> to <b>picked_up</b> if the scanned code equals the order's <code>pickupCode</code>, and add a <code>pickupScans</code> record. It cannot read users.</span></div>
+    <div class="box db"><b>Cloud Firestore (existing database)</b><span><code>orders</code>: + <code>pickupCode</code>, <code>pickedUpAt</code><br><code>pickupScans</code> (new): orderId, deviceId, result, at<br><code>devices</code> (new): lastSeen (heartbeat)<br><code>auditLog</code>: + action <code>pickup_scanned</code></span></div>
+  </div>
+</div>
+
+<div class="arrow"><div class="line">
+  <svg width="22" height="44"><line x1="11" y1="2" x2="11" y2="40" stroke="#8d8f87" stroke-width="2"/><path d="M4,32 L11,42 L18,32" fill="#8d8f87"/></svg>
+  real-time listeners (onSnapshot), as for the dashboard today
+</div></div>
+
+<div class="layer">
+  <div class="label"><b>4. Application</b><span>what people see</span></div>
+  <div class="row">
+    <div class="box grey"><b>Student: My orders</b><span>Status turns <b>Picked up</b> at the moment of the scan; nobody has to press a button.</span></div>
+    <div class="box grey"><b>Café dashboard</b><span>"#1154 picked up at the counter, 12:43". Device status: online / offline (no heartbeat for 3 min).</span></div>
+    <div class="box new"><b>Automatic rule</b><span>If an order is <b>Ready</b> and not scanned 15 minutes after its slot ends, the dashboard marks it <b>Not collected</b> so the kitchen can stop keeping it warm.</span></div>
+  </div>
+</div>
+
+<div class="legend">
+  <span><i class="sw" style="background:#fff8f3; border:2px dashed #c2410c"></i>new for the smart extension</span>
+  <span><i class="sw" style="background:#d6e1ee; border:2px solid #2f6fd6"></i>existing database from Assignment 3 (connection point)</span>
+  <span><i class="sw" style="background:#f3f3f1; border:2px solid #c9cbc4"></i>existing app screens</span>
+</div>
+</div></body></html>

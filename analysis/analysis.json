@@ -1,0 +1,270 @@
+{
+  "backup": "aitufood_2026-11-01_2001.json",
+  "totals": {
+    "orders": 152,
+    "seed": 139,
+    "liveTest": 13,
+    "seedCancelled": 6,
+    "analysed": 133,
+    "lines": 313,
+    "analysedLines": 282,
+    "seedDays": 5,
+    "revenue": 359800,
+    "portions": 322
+  },
+  "q1": [
+    {
+      "slot": "12:00",
+      "orders": 6
+    },
+    {
+      "slot": "12:10",
+      "orders": 9
+    },
+    {
+      "slot": "12:20",
+      "orders": 2
+    },
+    {
+      "slot": "12:30",
+      "orders": 14
+    },
+    {
+      "slot": "12:40",
+      "orders": 24
+    },
+    {
+      "slot": "12:50",
+      "orders": 21
+    },
+    {
+      "slot": "13:00",
+      "orders": 23
+    },
+    {
+      "slot": "13:10",
+      "orders": 11
+    },
+    {
+      "slot": "13:20",
+      "orders": 8
+    },
+    {
+      "slot": "13:30",
+      "orders": 4
+    },
+    {
+      "slot": "13:40",
+      "orders": 4
+    },
+    {
+      "slot": "13:50",
+      "orders": 7
+    }
+  ],
+  "q2": [
+    {
+      "dish": "Belyash",
+      "portions": 14
+    },
+    {
+      "dish": "Shorpa",
+      "portions": 14
+    },
+    {
+      "dish": "Vinaigrette",
+      "portions": 13
+    },
+    {
+      "dish": "Borscht",
+      "portions": 12
+    },
+    {
+      "dish": "Caesar with chicken",
+      "portions": 12
+    },
+    {
+      "dish": "Chak-chak",
+      "portions": 12
+    },
+    {
+      "dish": "Lentil soup",
+      "portions": 12
+    },
+    {
+      "dish": "Mashed potatoes",
+      "portions": 12
+    },
+    {
+      "dish": "Fried lagman",
+      "portions": 11
+    },
+    {
+      "dish": "Kompot",
+      "portions": 10
+    }
+  ],
+  "q2cat": [
+    {
+      "category": "Main dishes",
+      "revenue": 102600
+    },
+    {
+      "category": "Soups",
+      "revenue": 83300
+    },
+    {
+      "category": "Salads",
+      "revenue": 52400
+    },
+    {
+      "category": "Grill",
+      "revenue": 22500
+    },
+    {
+      "category": "Pastries",
+      "revenue": 21000
+    },
+    {
+      "category": "Fast food",
+      "revenue": 20800
+    },
+    {
+      "category": "Drinks",
+      "revenue": 20600
+    },
+    {
+      "category": "Desserts",
+      "revenue": 13200
+    },
+    {
+      "category": "Breakfast",
+      "revenue": 12000
+    },
+    {
+      "category": "Side dishes",
+      "revenue": 11400
+    }
+  ],
+  "q3": [
+    {
+      "from": "09:30",
+      "orders": 7
+    },
+    {
+      "from": "10:00",
+      "orders": 11
+    },
+    {
+      "from": "10:30",
+      "orders": 20
+    },
+    {
+      "from": "11:00",
+      "orders": 31
+    },
+    {
+      "from": "11:30",
+      "orders": 29
+    },
+    {
+      "from": "12:00",
+      "orders": 18
+    },
+    {
+      "from": "12:30",
+      "orders": 15
+    },
+    {
+      "from": "13:00",
+      "orders": 2
+    }
+  ],
+  "lead": {
+    "mean": 84,
+    "min": 17,
+    "max": 149
+  },
+  "daily": [
+    {
+      "date": "2026-10-11",
+      "orders": 32,
+      "cancelled": 2,
+      "revenue": 76450,
+      "average": 2389,
+      "source": "seed"
+    },
+    {
+      "date": "2026-10-12",
+      "orders": 33,
+      "cancelled": 3,
+      "revenue": 92350,
+      "average": 2798,
+      "source": "seed"
+    },
+    {
+      "date": "2026-10-13",
+      "orders": 32,
+      "cancelled": 1,
+      "revenue": 82950,
+      "average": 2592,
+      "source": "seed"
+    },
+    {
+      "date": "2026-10-14",
+      "orders": 30,
+      "cancelled": 0,
+      "revenue": 85850,
+      "average": 2862,
+      "source": "seed"
+    },
+    {
+      "date": "2026-10-15",
+      "orders": 6,
+      "cancelled": 0,
+      "revenue": 22200,
+      "average": 3700,
+      "source": "seed"
+    },
+    {
+      "date": "2026-10-16",
+      "orders": 3,
+      "cancelled": 0,
+      "revenue": 5700,
+      "average": 1900,
+      "source": "live test"
+    },
+    {
+      "date": "2026-10-25",
+      "orders": 5,
+      "cancelled": 0,
+      "revenue": 12100,
+      "average": 2420,
+      "source": "live test"
+    },
+    {
+      "date": "2026-10-26",
+      "orders": 2,
+      "cancelled": 0,
+      "revenue": 6200,
+      "average": 3100,
+      "source": "live test"
+    },
+    {
+      "date": "2026-10-29",
+      "orders": 1,
+      "cancelled": 0,
+      "revenue": 28000,
+      "average": 28000,
+      "source": "live test"
+    },
+    {
+      "date": "2026-10-30",
+      "orders": 2,
+      "cancelled": 0,
+      "revenue": 4100,
+      "average": 2050,
+      "source": "live test"
+    }
+  ]
+}

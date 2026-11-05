@@ -1,0 +1,36 @@
+{
+  "runs": [
+    {
+      "requests": 14,
+      "transferredKB": 268,
+      "loadEventMs": 509,
+      "finishMs": 2432,
+      "scrollWidthAt360": 360,
+      "measuredAt": "2026-11-01T15:30:52.913Z"
+    },
+    {
+      "requests": 14,
+      "transferredKB": 268,
+      "loadEventMs": 586,
+      "finishMs": 2405,
+      "scrollWidthAt360": 360,
+      "measuredAt": "2026-11-01T15:31:01.686Z"
+    },
+    {
+      "requests": 14,
+      "transferredKB": 268,
+      "loadEventMs": 514,
+      "finishMs": 2439,
+      "scrollWidthAt360": 360,
+      "measuredAt": "2026-11-01T15:31:10.683Z"
+    }
+  ],
+  "average": {
+    "requests": 14,
+    "transferredKB": 268,
+    "loadEventMs": 536,
+    "finishMs": 2425
+  },
+  "throttling": "Fast 4G (puppeteer PredefinedNetworkConditions), cache disabled, 360x780 @2x",
+  "url": "https://aitufood.web.app/"
+}

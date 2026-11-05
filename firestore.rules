@@ -1,0 +1,244 @@
+rules_version = '2';
+
+// AituFood - Cloud Firestore Security Rules
+// Firestore has no CREATE TABLE, so these rules are where the schema is enforced:
+//   NOT NULL     -> hasAll([...]) on required fields
+//   column list  -> hasOnly([...]) rejects unknown fields
+//   data types   -> "is string", "is int", "is bool", "is timestamp"
+//   CHECK        -> range and list checks (price > 0, quantity 1..10, status in [...])
+//   FOREIGN KEY  -> exists()/get() on the referenced document
+//   UNIQUE       -> document ID (users/{uid}, orders/{id}/items/{itemId}) and the order counter
+// Roles: "student" (default) and "staff" (custom claim set only by the admin script).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() {
+      return request.auth != null;
+    }
+    // Only accounts with an AITU e-mail can touch any data (R1, R11)
+    function isAitu() {
+      return signedIn()
+        && request.auth.token.email is string
+        && request.auth.token.email.lower().matches('.*@astanait[.]edu[.]kz$');
+    }
+    function isStaff() {
+      return isAitu() && request.auth.token.get('role', '') == 'staff';
+    }
+    function data() {
+      return request.resource.data;
+    }
+    function changed() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+    function path(coll, id) {
+      return /databases/$(database)/documents/$(coll)/$(id);
+    }
+    function isText(v, min, max) {
+      return v is string && v.size() >= min && v.size() <= max;
+    }
+
+    // ---------- users ----------
+    match /users/{uid} {
+      allow read: if isAitu() && (request.auth.uid == uid || isStaff());
+      // A user creates only their own profile and can never make themselves staff
+      allow create: if isAitu()
+        && request.auth.uid == uid
+        && data().keys().hasAll(['fullName', 'email', 'role', 'consentAt', 'createdAt'])
+        && data().keys().hasOnly(['fullName', 'email', 'role', 'consentAt', 'createdAt'])
+        && isText(data().fullName, 2, 60)
+        && data().email == request.auth.token.email
+        && data().role == 'student'
+        && data().consentAt == request.time                       // consent to processing (Law No. 94-V)
+        && data().createdAt == request.time;
+      allow update: if isAitu()
+        && request.auth.uid == uid
+        && changed().hasOnly(['fullName'])
+        && isText(data().fullName, 2, 60);
+      allow delete: if false; // RESTRICT: accounts with orders are anonymised by the admin, not deleted
+    }
+
+    // ---------- categories ----------
+    function validCategory() {
+      return data().keys().hasAll(['name', 'sortOrder'])
+        && data().keys().hasOnly(['name', 'sortOrder'])
+        && isText(data().name, 2, 40)
+        && data().sortOrder is int && data().sortOrder >= 0;
+    }
+    match /categories/{categoryId} {
+      allow read: if isAitu();
+      allow create, update: if isStaff() && validCategory();
+      allow delete: if false; // RESTRICT: menu items refer to it
+    }
+
+    // ---------- menuItems ----------
+    function validMenuItem() {
+      return data().keys().hasAll(['name', 'categoryId', 'price', 'available', 'updatedAt'])
+        && data().keys().hasOnly(['name', 'categoryId', 'price', 'description', 'available', 'photoUrl', 'updatedAt'])
+        && isText(data().name, 2, 60)
+        && exists(path('categories', data().categoryId))           // FOREIGN KEY
+        && data().price is int && data().price >= 100 && data().price <= 10000   // CHECK, tenge
+        && data().available is bool
+        && data().get('description', '') is string && data().get('description', '').size() <= 200
+        && data().updatedAt == request.time;
+    }
+    match /menuItems/{itemId} {
+      allow read: if isAitu();
+      allow create, update: if isStaff() && validMenuItem();       // R9: add, edit, mark sold out
+      allow delete: if false; // RESTRICT: dishes that were ordered are marked unavailable instead
+    }
+
+    // ---------- timeSlots ----------
+    function validSlot() {
+      return data().keys().hasAll(['date', 'startTime', 'capacity', 'bookedCount'])
+        && data().keys().hasOnly(['date', 'startTime', 'capacity', 'bookedCount', 'releasedBy'])
+        && data().date is string && data().date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && data().startTime is string && data().startTime.matches('^[0-9]{2}:[0-9]{2}$')
+        && data().capacity is int && data().capacity >= 1 && data().capacity <= 30
+        && data().bookedCount is int && data().bookedCount >= 0
+        && data().bookedCount <= data().capacity;                   // CHECK: a slot can never overflow (R4)
+    }
+    // A place in a slot may be given back only by the student who cancels their own "new"
+    // order for this slot in the same batch (releasedBy = that order's ID)
+    function releasedByCancel(slotId, orderId) {
+      let before = get(path('orders', orderId)).data;
+      return before.userId == request.auth.uid
+        && before.slotId == slotId
+        && before.status == 'new'
+        && getAfter(path('orders', orderId)).data.status == 'cancelled';
+    }
+    // Start of a slot as a timestamp: "2026-11-02" + "12:40" in Astana time (UTC+5)
+    function slotStart(slot) {
+      let d = slot.date.split('-');
+      let t = slot.startTime.split(':');
+      return timestamp.date(int(d[0]), int(d[1]), int(d[2]))
+        + duration.time(int(t[0]) - 5, int(t[1]), 0, 0);
+    }
+    match /timeSlots/{slotId} {
+      allow read: if isAitu();
+      // Staff open any day. Any AITU user may create an EMPTY standard slot for today or tomorrow
+      // (09:00-17:50, every 10 minutes, capacity 10): the app creates each day's slots itself,
+      // because the free plan has no scheduled Cloud Functions.
+      allow create: if (isStaff() && validSlot())
+        || (isAitu() && validSlot()
+            && data().keys().hasOnly(['date', 'startTime', 'capacity', 'bookedCount'])
+            && data().capacity == 10
+            && data().bookedCount == 0
+            && data().startTime.matches('^(09|1[0-7]):[0-5]0$')
+            && slotId == data().date + '_' + data().startTime.replace(':', '')
+            && slotStart(data()) > request.time - duration.value(1, 'd')
+            && slotStart(data()) < request.time + duration.value(2, 'd'));
+      // A student may only take one place in a slot, and only while it is not full
+      allow update: if (isStaff() && validSlot())
+        || (isAitu()
+            && changed().hasOnly(['bookedCount'])
+            && data().bookedCount == resource.data.bookedCount + 1
+            && data().bookedCount <= resource.data.capacity)
+        || (isAitu()
+            && changed().hasOnly(['bookedCount', 'releasedBy'])
+            && data().bookedCount == resource.data.bookedCount - 1
+            && data().releasedBy is string
+            && releasedByCancel(slotId, data().releasedBy));
+      allow delete: if false;
+    }
+
+    // ---------- counters (order numbers) ----------
+    match /counters/{name} {
+      allow read: if isAitu();
+      allow update: if isAitu()
+        && name == 'orders'
+        && changed().hasOnly(['next'])
+        && data().next == resource.data.next + 1;
+    }
+
+    // ---------- orders ----------
+    function counterBefore() { return get(path('counters', 'orders')).data.next; }
+    function counterAfter()  { return getAfter(path('counters', 'orders')).data.next; }
+
+    match /orders/{orderId} {
+      // A student sees only their own orders; staff see all (R8, R11)
+      allow read: if isStaff() || (isAitu() && resource.data.userId == request.auth.uid);
+
+      allow create: if isAitu()
+        && data().keys().hasAll(['orderNo', 'userId', 'slotId', 'status', 'total', 'createdAt', 'updatedAt'])
+        && data().keys().hasOnly(['orderNo', 'userId', 'slotId', 'status', 'total', 'createdAt', 'updatedAt', 'secondsToOrder'])
+        && data().userId == request.auth.uid                        // FOREIGN KEY to the caller's own account
+        && data().status == 'new'
+        && data().total is int && data().total > 0
+        // optional usability measurement (Stage 2, B1): whole seconds from opening the app, 1..3600
+        && (!data().keys().hasAny(['secondsToOrder'])
+            || (data().secondsToOrder is int && data().secondsToOrder >= 1 && data().secondsToOrder <= 3600))
+        && data().createdAt == request.time
+        && data().updatedAt == request.time
+        // UNIQUE order number: it must equal the counter and the counter must move on in the same transaction
+        && data().orderNo == counterBefore()
+        && counterAfter() == counterBefore() + 1
+        // FOREIGN KEY to the slot, and the slot must be booked in the same transaction (R4)
+        && exists(path('timeSlots', data().slotId))
+        // no orders for slots that have started or start in less than 5 minutes (server clock)
+        && request.time < slotStart(get(path('timeSlots', data().slotId)).data) - duration.value(5, 'm')
+        && getAfter(path('timeSlots', data().slotId)).data.bookedCount
+             == get(path('timeSlots', data().slotId)).data.bookedCount + 1;
+
+      // Only cafe staff change the status (R6, R8, R11) ...
+      allow update: if (isStaff()
+          && changed().hasOnly(['status', 'updatedAt'])
+          && data().status in ['new', 'cooking', 'ready', 'picked_up', 'cancelled']
+          && data().updatedAt == request.time)
+        // ... except that a student may cancel their own "new" order within 30 seconds (server time)
+        // and must give the place in the slot back in the same batch
+        || (isAitu()
+          && resource.data.userId == request.auth.uid
+          && resource.data.status == 'new'
+          && data().status == 'cancelled'
+          && changed().hasOnly(['status', 'updatedAt'])
+          && data().updatedAt == request.time
+          && request.time < resource.data.createdAt + duration.value(30, 's')
+          && getAfter(path('timeSlots', resource.data.slotId)).data.bookedCount
+               == get(path('timeSlots', resource.data.slotId)).data.bookedCount - 1);
+
+      allow delete: if false; // order history is kept for the daily report (R10)
+
+      // ---------- order lines: orders/{orderId}/items/{itemId} ----------
+      // The document ID is the menu item ID, so (orderId, itemId) is the composite primary key
+      match /items/{itemId} {
+        function parentAfter() { return getAfter(path('orders', orderId)).data; }
+        function menuItem()    { return get(path('menuItems', itemId)).data; }
+
+        allow read: if isStaff()
+          || (isAitu() && get(path('orders', orderId)).data.userId == request.auth.uid);
+
+        // Lines can be written only together with their own new order
+        allow create: if isAitu()
+          && parentAfter().userId == request.auth.uid
+          && parentAfter().createdAt == request.time
+          && data().keys().hasAll(['quantity', 'priceAtOrder'])
+          && data().keys().hasOnly(['quantity', 'priceAtOrder'])
+          && data().quantity is int && data().quantity >= 1 && data().quantity <= 10   // CHECK
+          && exists(path('menuItems', itemId))                                          // FOREIGN KEY
+          && menuItem().available == true                                               // no sold-out dishes
+          && data().priceAtOrder == menuItem().price;                                   // client cannot fake the price
+
+        allow update, delete: if false;
+      }
+    }
+
+    // ---------- auditLog (append-only security log) ----------
+    match /auditLog/{logId} {
+      allow read: if isStaff();
+      allow create: if isAitu()
+        && data().keys().hasAll(['userId', 'action', 'targetId', 'at'])
+        && data().keys().hasOnly(['userId', 'action', 'targetId', 'at'])
+        && data().userId == request.auth.uid
+        && data().action in ['login', 'register', 'order_created', 'order_cancelled', 'status_changed', 'menu_updated', 'slots_opened']
+        && data().targetId is string && data().targetId.size() <= 60
+        && data().at == request.time;
+      allow update, delete: if false; // nobody, including staff, can rewrite the log
+    }
+
+    // Everything else is closed
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

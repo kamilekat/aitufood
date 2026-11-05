@@ -1,0 +1,15 @@
+{
+  "_note": "apa = author name in APA order (only for clear first-last names; screen names are kept as shown on Unsplash). Category photos for AituFood, downloaded 2026-10-24 from Unsplash (original resolution). All under the Unsplash License: free to use, copy, modify for commercial and non-commercial purposes, no attribution required (we credit anyway). https://unsplash.com/license",
+  "photos": [
+    { "category": "soups",     "title": "A bowl of soup with meat and vegetables", "author": "Frank from 5 AM Ramen", "username": "5amramen",          "page": "https://unsplash.com/photos/vPMQl71yFDI", "file": "photo-1635379511574-bc167ca085c8" },
+    { "category": "mains",     "title": "Steamed rice and meat dish",              "author": "Dragne Marius",         "username": "marius_dragne",     "page": "https://unsplash.com/photos/EdzsUFqHbaY", "file": "photo-1516714435131-44d6b64dc6a2" },
+    { "category": "salads",    "title": "Bowl of vegetable salads",                "author": "Anna Pelzer", "apa": "Pelzer, A.",           "username": "annapelzer",        "page": "https://unsplash.com/photos/IGfIGP5ONV0", "file": "photo-1512621776951-a57141f2eefd" },
+    { "category": "pastries",  "title": "Baked pastries",                          "author": "Sheri Silver", "apa": "Silver, S.",          "username": "sheri_silver",      "page": "https://unsplash.com/photos/LBEytWZnxbQ", "file": "photo-1554298377-9e4df6fd965c" },
+    { "category": "drinks",    "title": "A cup of coffee and a glass of tea on a table", "author": "Mustafa akın", "apa": "Akın, M.",    "username": "msaimakin",         "page": "https://unsplash.com/photos/4zIGjPUy0d0", "file": "photo-1719227204225-be9d7c9e182e" },
+    { "category": "desserts",  "title": "Flat-lay photography of slice of cakes",  "author": "Alexandra Golovac", "apa": "Golovac, A.",     "username": "atasteofwellbeing", "page": "https://unsplash.com/photos/nN_AjO-Pjgg", "file": "photo-1536599524557-5f784dd53282" },
+    { "category": "breakfast", "title": "A white plate topped with a fried egg and slices of bread", "author": "Imad 786", "username": "imad8321", "page": "https://unsplash.com/photos/QIoFXeRgShc", "file": "photo-1694103198474-1dab8bb1c67c" },
+    { "category": "sides",     "title": "A bowl of mashed potatoes topped with chives", "author": "You Le",           "username": "le_y0u",            "page": "https://unsplash.com/photos/l-mqDIEwcKk", "file": "photo-1707616954324-99c89a78a20d" },
+    { "category": "grill",     "title": "Grilled meat on black round plate",       "author": "Z Grills Australia",    "username": "zgrillsaustralia",  "page": "https://unsplash.com/photos/n0zK35d967w", "file": "photo-1626323109697-df55d20f06a8" },
+    { "category": "fastfood",  "title": "Burger with lettuce and fries",           "author": "Mike",                  "username": "omaha",             "page": "https://unsplash.com/photos/PxJ9zkM2wdA", "file": "photo-1594212699903-ec8a3eca50f5" }
+  ]
+}

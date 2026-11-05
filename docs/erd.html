@@ -1,0 +1,88 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>AituFood ERD</title>
+<style>
+  :root { --ink:#1f2328; --muted:#5b6168; --line:#a9aba2; --box:#ffffff; --head:#ececea; --accent:#2f6fd6; --accentbg:#d6e1ee; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:-apple-system, "Helvetica Neue", Arial, sans-serif; color:var(--ink); }
+  #c { position:relative; width:1440px; height:1080px; }
+  h1 { position:absolute; left:40px; top:18px; margin:0; font-size:27px; font-weight:600; }
+  .sub { position:absolute; left:40px; top:56px; font-size:17px; color:var(--muted); }
+  .ent { position:absolute; width:380px; border:2px solid #c9cbc4; border-radius:12px; background:var(--box); overflow:hidden; }
+  .ent.main { border-color:var(--accent); }
+  .ent h2 { margin:0; padding:9px 14px; font-size:20px; background:var(--head); border-bottom:1.5px solid #c9cbc4; display:flex; justify-content:space-between; align-items:baseline; }
+  .ent.main h2 { background:var(--accentbg); }
+  .ent h2 small { font-size:13px; font-weight:500; color:var(--muted); }
+  .row { display:flex; align-items:center; height:31px; padding:0 14px; font-size:16px; border-bottom:1px solid #efefec; }
+  .row:last-child { border-bottom:none; }
+  .row .n { flex:1; }
+  .row .t { color:var(--muted); font-size:14px; margin-left:8px; }
+  .k { display:inline-block; min-width:30px; font-size:11.5px; font-weight:700; padding:2px 5px; border-radius:4px; margin-right:8px; text-align:center; }
+  .pk { background:#1f2328; color:#fff; } .fk { background:#2f6fd6; color:#fff; } .uq { background:#e8e2cf; color:#5a4a12; }
+  .nk { background:transparent; }
+  svg { position:absolute; left:0; top:0; }
+  .lbl { font-size:17px; font-weight:700; fill:var(--ink); }
+  .rel { font-size:14px; fill:var(--muted); }
+  .note { position:absolute; font-size:15px; color:var(--muted); line-height:1.4; }
+  .legend { position:absolute; left:40px; top:1010px; font-size:15px; color:var(--muted); }
+</style></head>
+<body><div id="c">
+<h1>AituFood data model: 7 collections in Cloud Firestore</h1>
+<div class="sub">Each box is a collection; each row is a field. Document ID = primary key; a field that stores another document's ID = foreign key.</div>
+<svg id="s" width="1440" height="1080"></svg>
+</div>
+<script>
+const E = {
+  users:      { x:40,   y:110, title:'users', note:'43 docs', rows:[['pk','uid','string (Auth UID)'],['uq','email','string, @astanait.edu.kz'],['nk','fullName','string 2–60'],['nk','role','student | staff'],['nk','consentAt','timestamp (Law 94-V)'],['nk','createdAt','timestamp']] },
+  orders:     { x:530,  y:110, title:'orders', note:'139 docs · main', main:true, rows:[['pk','orderId','auto ID'],['uq','orderNo','int, 1001…'],['fk','userId','→ users'],['fk','slotId','→ timeSlots'],['nk','status','new|cooking|ready|picked_up|cancelled'],['nk','total','int ₸ > 0'],['nk','createdAt','timestamp'],['nk','updatedAt','timestamp']] },
+  timeSlots:  { x:1020, y:110, title:'timeSlots', note:'60 docs', rows:[['pk','slotId','"2026-10-14_1240"'],['nk','date','YYYY-MM-DD'],['nk','startTime','HH:MM'],['nk','capacity','int 1–30'],['nk','bookedCount','int 0…capacity']] },
+  items:      { x:530,  y:590, title:'orders/{id}/items', note:'293 docs · linking', rows:[['pk','orderId','PK + FK → orders'],['pk','itemId','PK + FK → menuItems'],['nk','quantity','int 1–10'],['nk','priceAtOrder','int ₸ = price then']] },
+  menuItems:  { x:1020, y:500, title:'menuItems', note:'40 docs', rows:[['pk','itemId','e.g. "plov"'],['fk','categoryId','→ categories'],['nk','name','string 2–60'],['nk','price','int 100–10 000 ₸'],['nk','description','string ≤ 200'],['nk','available','bool (sold out)'],['nk','photoUrl','string | null'],['nk','updatedAt','timestamp']] },
+  categories: { x:1020, y:895, title:'categories', note:'10 docs', rows:[['pk','categoryId','e.g. "soups"'],['nk','name','string'],['nk','sortOrder','int ≥ 0']] },
+  auditLog:   { x:40,   y:590, title:'auditLog', note:'206 docs', rows:[['pk','logId','auto ID'],['fk','userId','→ users'],['nk','action','login|order_created|…'],['nk','targetId','string'],['nk','at','timestamp']] },
+};
+const c = document.getElementById('c');
+for (const [id, e] of Object.entries(E)) {
+  const d = document.createElement('div');
+  d.className = 'ent' + (e.main ? ' main' : '');
+  d.style.left = e.x + 'px'; d.style.top = e.y + 'px';
+  const label = { pk:'PK', fk:'FK', uq:'UQ', nk:'' };
+  d.innerHTML = `<h2>${e.title} <small>${e.note}</small></h2>` + e.rows.map(([k,n,t]) =>
+    `<div class="row"><span class="k ${k}">${label[k]}</span><span class="n">${n}</span><span class="t">${t}</span></div>`).join('');
+  c.appendChild(d);
+  e.h = 44 + e.rows.length * 31;
+}
+const s = document.getElementById('s');
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, text) { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text) n.textContent = text; s.appendChild(n); return n; }
+// one end "1" (two bars), many end "N" (crow's foot)
+function rel(x1, y1, x2, y2, label, lx, ly) {
+  el('line', { x1, y1, x2, y2, stroke:'#8d8f87', 'stroke-width':2 });
+  const dx = Math.sign(x2 - x1), dy = Math.sign(y2 - y1);
+  // "one" bars near start
+  for (const off of [10, 16]) {
+    if (dx) el('line', { x1:x1 + dx*off, y1:y1-9, x2:x1 + dx*off, y2:y1+9, stroke:'#5b6168', 'stroke-width':2 });
+    else    el('line', { x1:x1-9, y1:y1 + dy*off, x2:x1+9, y2:y1 + dy*off, stroke:'#5b6168', 'stroke-width':2 });
+  }
+  // crow's foot at end
+  const b = 16;
+  if (dx) { for (const o of [-10, 0, 10]) el('line', { x1:x2 - dx*b, y1:y2, x2, y2:y2+o, stroke:'#5b6168', 'stroke-width':2 }); }
+  else    { for (const o of [-10, 0, 10]) el('line', { x1:x2, y1:y2 - dy*b, x2:x2+o, y2, stroke:'#5b6168', 'stroke-width':2 }); }
+  el('text', { x: x1 + (dx ? dx*22 : 14), y: y1 + (dy ? dy*30 : -12), class:'lbl' }, '1');
+  el('text', { x: x2 - (dx ? dx*32 : -14), y: y2 - (dy ? dy*24 : 12), class:'lbl' }, 'N');
+  if (label) el('text', { x:lx, y:ly, class:'rel', 'text-anchor':'middle' }, label);
+}
+rel(420, 190, 530, 190, 'places', 475, 228);
+rel(1020, 190, 910, 190, 'is picked up in', 965, 228);
+rel(720, 110 + E.orders.h, 720, 590, 'contains', 770, 110 + E.orders.h + 100);
+rel(1020, 680, 910, 680, 'appears in', 965, 718);
+rel(1210, 895, 1210, 500 + E.menuItems.h, 'groups', 1250, 895 - 50);
+rel(230, 110 + E.users.h, 230, 590, 'performs', 275, 110 + E.users.h + 130);
+</script>
+<div class="note" style="left:40px; top:880px; width:440px;">
+  <b style="color:#1f2328">M : N resolved.</b> One order has many dishes and one dish is in many orders.
+  The linking subcollection <b style="color:#1f2328">orders/{orderId}/items/{itemId}</b> uses the pair
+  (orderId, itemId) as its key, like the table <i>order_items</i> in SQL.<br>
+  <b style="color:#1f2328">counters/orders</b> (1 technical doc) holds the next order number.
+</div>
+<div class="legend"><span class="k pk">PK</span>primary key (document ID) &nbsp;&nbsp; <span class="k fk">FK</span>foreign key (ID of another document) &nbsp;&nbsp; <span class="k uq">UQ</span>unique &nbsp;&nbsp; | — one &nbsp;&nbsp; crow's foot — many</div>
+</body></html>

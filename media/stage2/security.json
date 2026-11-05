@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-11-01T15:31:41Z",
+  "anonymousRestRead": {"orders": 403, "menuItems": 403, "users": 403, "message": "PERMISSION_DENIED: Missing or insufficient permissions."},
+  "httpRedirect": "http://aitufood.web.app -> 301 https://aitufood.web.app/",
+  "hsts": "strict-transport-security: max-age=31556926; includeSubDomains; preload",
+  "rulesTests": "21 of 21 pass (npm run test:rules)"
+}

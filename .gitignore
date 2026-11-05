@@ -1,0 +1,22 @@
+# dependencies and build output
+node_modules/
+dist/
+
+# secrets (never commit)
+.env.local
+serviceAccount*.json
+accounts*.json
+
+# Firebase / emulator local files
+.firebase/
+emulator-data/
+firebase-export-*/
+*-debug.log
+
+# data backups contain real user e-mails of testers
+/backups/
+
+# heavy Unsplash originals (48 MB, the "before" state of Assignment 4); kept locally
+/media/originals/
+
+.DS_Store

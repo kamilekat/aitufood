@@ -1,0 +1,75 @@
+{
+  "measuredAt": "2026-10-24T18:22:04.806Z",
+  "url": "https://aitufood.web.app/",
+  "images": [
+    {
+      "file": "menu.png",
+      "setting": "PNG (lossless, level 9)",
+      "resolution": "1280 × 800",
+      "kb": 673.8,
+      "ssim": 1
+    },
+    {
+      "file": "menu_q80.jpg",
+      "setting": "JPEG quality 80 (lossy)",
+      "resolution": "1280 × 800",
+      "kb": 98.9,
+      "ssim": 0.986747
+    },
+    {
+      "file": "menu_q40.jpg",
+      "setting": "JPEG quality 40 (lossy)",
+      "resolution": "1280 × 800",
+      "kb": 55,
+      "ssim": 0.969266
+    },
+    {
+      "file": "menu_q75.webp",
+      "setting": "WebP quality 75 (lossy)",
+      "resolution": "1280 × 800",
+      "kb": 48.4,
+      "ssim": 0.986528
+    },
+    {
+      "file": "menu_lossless.webp",
+      "setting": "WebP lossless",
+      "resolution": "1280 × 800",
+      "kb": 332.3,
+      "ssim": 1
+    }
+  ],
+  "videos": [
+    {
+      "file": "clip_master.mp4",
+      "setting": "MP4 / H.264, CRF 10 (master)",
+      "resolution": "1280 × 720, 30 fps, 10 s",
+      "kbitPerSec": 2539,
+      "kb": 3100.3,
+      "ssim": 1
+    },
+    {
+      "file": "clip_h264_crf23.mp4",
+      "setting": "MP4 / H.264, CRF 23 (default quality)",
+      "resolution": "1280 × 720, 30 fps, 10 s",
+      "kbitPerSec": 979,
+      "kb": 1195.3,
+      "ssim": 0.994629
+    },
+    {
+      "file": "clip_h264_crf38.mp4",
+      "setting": "MP4 / H.264, CRF 38 (low quality)",
+      "resolution": "1280 × 720, 30 fps, 10 s",
+      "kbitPerSec": 282,
+      "kb": 344.7,
+      "ssim": 0.964176
+    },
+    {
+      "file": "clip_vp9_crf33.webm",
+      "setting": "WebM / VP9, CRF 33",
+      "resolution": "1280 × 720, 30 fps, 10 s",
+      "kbitPerSec": 350,
+      "kb": 427.4,
+      "ssim": 0.97505
+    }
+  ]
+}

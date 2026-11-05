@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- AituFood logo, own work (K. Tangirbergen, 2026): a lunch bowl with steam on a white tile -->
+  <rect width="64" height="64" rx="14" fill="#fff"/>
+  <path d="M10 32h44a22 22 0 0 1-44 0Z" fill="#1d4ed8"/>
+  <path d="M20 56h24" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round"/>
+  <path d="M22 10c3 3-3 7 0 10M32 8c3 3-3 7 0 10M42 10c3 3-3 7 0 10" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+</svg>

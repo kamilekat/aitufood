@@ -1,0 +1,26 @@
+{
+  "url": "https://aitufood.web.app/",
+  "measuredAt": "2026-11-01T15:31:10.683Z",
+  "throttling": "Fast 4G (puppeteer PredefinedNetworkConditions), cache disabled, 360x780 @2x",
+  "requests": 14,
+  "transferredKB": 268,
+  "imageRequests": 4,
+  "imageKB": 115,
+  "loadEventMs": 514,
+  "finishMs": 2439,
+  "scrollWidthAt360": 360,
+  "largest": [
+    "146 KB  Script  https://aitufood.web.app/assets/index-Bys1lYV2.js",
+    "44 KB  Image  https://aitufood.web.app/img/categories/mains-800.webp",
+    "36 KB  Image  https://aitufood.web.app/img/categories/salads-800.webp",
+    "35 KB  Image  https://aitufood.web.app/img/categories/soups-800.webp",
+    "5 KB  Stylesheet  https://aitufood.web.app/assets/index-DznOO-Xh.css",
+    "1 KB  Other  https://aitufood.web.app/favicon.svg",
+    "1 KB  Image  https://aitufood.web.app/logo.svg",
+    "1 KB  Document  https://aitufood.web.app/",
+    "0 KB  Fetch  https://identitytoolkit.googleapis.com/v1/accounts:lookup",
+    "0 KB  Fetch  /firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel",
+    "0 KB  Fetch  /firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel",
+    "0 KB  Fetch  /firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel"
+  ]
+}

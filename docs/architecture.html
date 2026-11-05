@@ -1,0 +1,92 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>AituFood architecture</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:-apple-system, "Helvetica Neue", Arial, sans-serif; color:#1f2328; }
+  #c { position:relative; width:1440px; height:1240px; }
+  .abs { position:absolute; }
+  h1 { position:absolute; left:40px; top:18px; margin:0; font-size:27px; font-weight:600; }
+  .tier { position:absolute; left:40px; font-size:19px; color:#5b6168; width:170px; }
+  .box { position:absolute; border:2px solid #c9cbc4; border-radius:12px; background:#fff; text-align:center; padding:12px 10px; }
+  .box b { display:block; font-size:21px; margin-bottom:4px; }
+  .box span { font-size:16.5px; line-height:1.35; display:block; }
+  .grey { background:#ececea; }
+  .db { background:#d6e1ee; border-color:#2f6fd6; border-width:3px; }
+  .zone { position:absolute; border-radius:14px; }
+  .cloud { background:#f3f3f1; border:2px solid #c9cbc4; }
+  .auth { border:3px dashed #c2410c; }
+  .zl { position:absolute; font-size:18px; font-weight:600; }
+  .tag { position:absolute; font-size:14px; font-weight:700; padding:4px 9px; border-radius:6px; }
+  .pub { background:#e6f4ea; color:#14532d; border:1.5px solid #86c79a; }
+  .enc { background:#e0ecfb; color:#1e3a8a; border:1.5px solid #8fb2e8; }
+  .aut { background:#fdebdf; color:#7c2d12; border:1.5px solid #e8a37c; }
+  .adm { background:#efe7f7; color:#4c1d95; border:1.5px solid #b79ae0; }
+  svg { position:absolute; left:0; top:0; }
+  .small { font-size:16px; color:#5b6168; }
+  .legend { position:absolute; left:40px; top:1170px; font-size:15px; color:#3b4046; display:flex; gap:18px; align-items:center; flex-wrap:wrap; width:1360px; }
+  .legend .tag { position:static; }
+</style></head>
+<body><div id="c">
+<h1>AituFood after Assignment 3: where the data lives and what protects it</h1>
+
+<svg width="1440" height="1240">
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8d8f87"/></marker></defs>
+  <g stroke="#8d8f87" stroke-width="2" fill="none">
+    <line x1="505" y1="190" x2="505" y2="246" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="1060" y1="190" x2="1060" y2="246" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="783" y1="346" x2="783" y2="414" marker-start="url(#a)" marker-end="url(#a)"/>
+  </g>
+</svg>
+
+<div class="tier" style="top:120px">Presentation tier</div>
+<div class="box" style="left:265px; top:86px; width:480px; height:104px"><b>Student's phone</b><span>aitufood.web.app in the browser (360 px)</span></div>
+<div class="box" style="left:820px; top:86px; width:480px; height:104px"><b>Café tablet</b><span>Orders dashboard and menu editor</span></div>
+<div class="tag pub" style="left:268px; top:58px">PUBLIC: https://aitufood.web.app — app code (HTML, JS, CSS) only</div>
+
+<div class="tier" style="top:280px">Network</div>
+<div class="box" style="left:265px; top:248px; width:1035px; height:98px"><b>AITU Wi-Fi or mobile 4G, then the Internet</b><span>DNS → HTTPS; every request and real-time update is encrypted with TLS</span></div>
+<div class="tag enc" style="left:1010px; top:356px">ENCRYPTED IN TRANSIT: TLS 1.2+</div>
+<div class="abs small" style="left:800px; top:372px">HTTPS + ID token</div>
+
+<!-- Firebase project -->
+<div class="zone cloud" style="left:265px; top:416px; width:1035px; height:610px"></div>
+<div class="zl" style="left:290px; top:428px; font-size:20px">Google Cloud: Firebase project “aitufood” <span class="small" style="font-weight:400">· Spark plan · Firestore in europe-west3 (Frankfurt)</span></div>
+
+<div class="tier" style="top:490px">Logic tier</div>
+<div class="box" style="left:292px; top:470px; width:290px; height:104px"><b>Firebase Hosting</b><span>aitufood.web.app via CDN, HTTPS only</span></div>
+<div class="box" style="left:625px; top:470px; width:316px; height:104px"><b>Firebase Authentication</b><span>AITU e-mail + password; scrypt hash; role claim</span></div>
+<div class="tag aut" style="left:800px; top:582px">AUTHENTICATED</div>
+
+<!-- authorised zone -->
+<div class="zone auth" style="left:555px; top:610px; width:730px; height:400px"></div>
+<div class="zl" style="left:880px; top:950px; color:#9a3412; font-size:16px; width:390px; text-align:right">Security boundary: token + rules required</div>
+<div class="box grey" style="left:575px; top:652px; width:690px; height:98px; text-align:left; padding-left:20px"><b>Firestore Security Rules</b><span>Roles student / staff · own orders only · type, range and FK checks · price and slot capacity checked on the server</span></div>
+<div class="tag aut" style="left:1150px; top:617px">AUTHORISED</div>
+
+<div class="tier" style="top:820px">Data tier</div>
+<div class="box db" style="left:575px; top:790px; width:420px; height:140px"><b>Cloud Firestore (database)</b><span>users · categories · menuItems · timeSlots · orders + items · auditLog · counters</span></div>
+<div class="tag enc" style="left:590px; top:944px">ENCRYPTED AT REST: AES-256 (Google)</div>
+<div class="box" style="left:1025px; top:790px; width:240px; height:140px"><b>auditLog</b><span>append-only: logins, orders, status and menu changes</span></div>
+
+<div class="box" style="left:292px; top:790px; width:235px; height:140px"><b>Admin scripts</b><span>seed, backup, restore (Admin SDK with service-account key)</span></div>
+<div class="tag adm" style="left:292px; top:752px">ADMIN ONLY: bypasses rules</div>
+
+<!-- backup -->
+<div class="tier" style="top:1075px">Backup and tests</div>
+<div class="box" style="left:265px; top:1050px; width:500px; height:96px"><b>Daily JSON backup</b><span>team laptop (FileVault) + copy in Google Drive</span></div>
+<div class="box" style="left:800px; top:1050px; width:500px; height:96px"><b>Rules tests before every deploy</b><span>17 tests in the local Firestore emulator</span></div>
+<svg width="1440" height="1240" style="pointer-events:none"><g stroke="#8d8f87" stroke-width="2" fill="none"><path d="M 410 930 L 410 1048" marker-end="url(#a)"/>
+<line x1="783" y1="576" x2="783" y2="650" marker-end="url(#a)"/>
+<line x1="783" y1="750" x2="783" y2="788" marker-end="url(#a)"/>
+<line x1="1145" y1="750" x2="1145" y2="788" marker-end="url(#a)"/>
+<line x1="527" y1="860" x2="573" y2="860" marker-end="url(#a)"/></g>
+<text x="420" y="1000" font-size="15" fill="#5b6168">backup.mjs</text></svg>
+
+<div class="legend">
+  <span class="tag pub">PUBLIC</span> anyone can get it
+  <span class="tag enc">ENCRYPTED</span> in transit / at rest
+  <span class="tag aut">AUTHENTICATED</span> logged-in AITU user
+  <span class="tag aut">AUTHORISED</span> passed Security Rules
+  <span class="tag adm">ADMIN ONLY</span> service-account key
+</div>
+</div></body></html>
