@@ -52,6 +52,13 @@ export default function Menu({ session, onOrdered }) {
   const openList = slots.filter((s) => slotIsOpen(s, now));
   const chosenSlot = openList.find((s) => s.id === slotId);
 
+  // scroll to the pickup slots and move keyboard / screen-reader focus to their heading
+  function goToPickup() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById('pickup')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    document.getElementById('pickup-heading')?.focus({ preventScroll: true });
+  }
+
   function change(id, delta) {
     const q = Math.max(0, Math.min(MAX_QUANTITY, (cart[id] || 0) + delta));
     const next = { ...cart, [id]: q };
@@ -131,8 +138,8 @@ export default function Menu({ session, onOrdered }) {
         );
       })}
 
-      <section className="mb-4">
-        <h2 className="text-lg font-bold">Pickup time · {day.label}</h2>
+      <section id="pickup" className="mb-4 scroll-mt-4">
+        <h2 id="pickup-heading" tabIndex={-1} className="text-lg font-bold focus:outline-none">Pickup time · {day.label}</h2>
         <p className="text-sm text-slate-600 mb-2">
           Slots every 10 minutes from 09:00 to 18:00; each takes up to 10 orders. Slots that start in less than 10 minutes are not shown.
         </p>
@@ -169,7 +176,11 @@ export default function Menu({ session, onOrdered }) {
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <div className="flex-1">
             <p className="font-semibold">{count} item{count === 1 ? '' : 's'} · {formatTenge(total)}</p>
-            <p className="text-sm text-slate-600">{chosenSlot ? `Pickup ${chosenSlot.startTime}` : 'Choose a pickup time'}</p>
+            {/* Week 10 (Stage 2 test finding): testers did not see the slots below the menu, so this jumps to them */}
+            <button type="button" onClick={goToPickup}
+              className="min-h-11 text-sm text-blue-800 font-medium underline text-left">
+              {chosenSlot ? `Pickup ${chosenSlot.startTime} · change` : 'Choose a pickup time ↓'}
+            </button>
           </div>
           <button onClick={submit} disabled={busy || count === 0 || !slotId}
             className="min-h-12 px-5 rounded-lg bg-blue-700 text-white font-semibold disabled:bg-slate-400">
