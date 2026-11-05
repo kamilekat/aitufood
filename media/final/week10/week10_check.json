@@ -2,10 +2,10 @@
   "gmailRejected": "Use your AITU account: type only your student ID (for example 240001).",
   "passwordTypeAfterShow": "text",
   "signedInWithIdOnly": true,
-  "pickupHeadingTop": 348,
+  "pickupHeadingTop": 460,
   "focused": "pickup-heading",
   "scrollWidth": 360,
   "consoleErrors": [],
-  "url": "http://localhost:4173/",
-  "at": "2026-11-05T11:36:40.727Z"
+  "url": "https://aitufood.web.app/",
+  "at": "2026-11-05T12:14:44.457Z"
 }
