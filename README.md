@@ -31,7 +31,7 @@ the first visitor of the day. Before 17:50 (Astana time) students order for toda
 Requirements: **Node.js 20+** and Git. Java 11+ only for the rules tests.
 
 ```bash
-git clone https://github.com/<GITHUB_LOGIN>/aitufood.git
+git clone https://github.com/kamilekat/aitufood.git
 cd aitufood
 npm install
 cp .env.example .env.local      # public web config of the live project (see the comment in the file)
@@ -100,7 +100,7 @@ npm run test:results -- 2026-11-01                   # read only: usability-test
 
 ## Team and commit history
 
-Code commits in this repository are made by **Kamila Tangirbergen** (architecture, Firestore, rules, tests, deployment).
+Repository: https://github.com/kamilekat/aitufood · Code commits in this repository are made by **Kamila Tangirbergen** (architecture, Firestore, rules, tests, deployment).
 Git was started at the final stage (Week 10): the first commit contains the system as built through Project Stage 2,
 and every Week 10 change is a separate commit. **Karlygash Duisenbayeva**'s work (menu and test-data content, UX of
 menu / cart / slots / My orders, usability tests, privacy, IoT extension, normalisation) is listed in the Final report
