@@ -1,0 +1,103 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>AituFood as built</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; font-family:-apple-system, "Helvetica Neue", Arial, sans-serif; color:#1f2328; }
+  #c { position:relative; width:1440px; height:1380px; }
+  .abs { position:absolute; }
+  h1 { position:absolute; left:40px; top:18px; margin:0; font-size:27px; font-weight:600; }
+  .tier { position:absolute; left:40px; font-size:19px; color:#5b6168; width:170px; }
+  .box { position:absolute; border:2px solid #c9cbc4; border-radius:12px; background:#fff; text-align:center; padding:12px 10px; }
+  .box b { display:block; font-size:21px; margin-bottom:4px; }
+  .box span { font-size:16.5px; line-height:1.35; display:block; }
+  .grey { background:#ececea; }
+  .db { background:#d6e1ee; border-color:#2f6fd6; border-width:3px; }
+  .zone { position:absolute; border-radius:14px; }
+  .cloud { background:#f3f3f1; border:2px solid #c9cbc4; }
+  .auth { border:3px dashed #c2410c; }
+  .zl { position:absolute; font-size:18px; font-weight:600; }
+  .tag { position:absolute; font-size:14px; font-weight:700; padding:4px 9px; border-radius:6px; }
+  .pub { background:#e6f4ea; color:#14532d; border:1.5px solid #86c79a; }
+  .enc { background:#e0ecfb; color:#1e3a8a; border:1.5px solid #8fb2e8; }
+  .aut { background:#fdebdf; color:#7c2d12; border:1.5px solid #e8a37c; }
+  .adm { background:#efe7f7; color:#4c1d95; border:1.5px solid #b79ae0; }
+  svg { position:absolute; left:0; top:0; }
+  .small { font-size:16px; color:#5b6168; }
+  .legend { position:absolute; left:40px; top:1200px; font-size:15px; color:#3b4046; display:flex; gap:18px; align-items:center; flex-wrap:wrap; width:1360px; }
+  .legend .tag { position:static; }
+  .plan { border:2px dashed #8d8f87; background:#fafaf8; color:#4b5057; }
+  .media { background:#fff7e6; border-color:#d39e3a; }
+</style></head>
+<body><div id="c">
+<h1>AituFood as built (Final, v0.5.0): devices, network, cloud, security boundary</h1>
+
+<div class="tier" style="top:118px">Client devices</div>
+<div class="box" style="left:230px; top:86px; width:330px; height:104px"><b>Visitor (no account)</b><span>Home page, Sign in / Register</span></div>
+<div class="box" style="left:585px; top:86px; width:330px; height:104px"><b>Student's phone</b><span>browser, 360 px: menu, cart, slots, My orders, 30-s cancel</span></div>
+<div class="box" style="left:940px; top:86px; width:360px; height:104px"><b>Café laptop / tablet</b><span>live dashboard + chime, daily report, menu editor</span></div>
+<div class="tag pub" style="left:232px; top:58px">PUBLIC: app code, home page, photos, sound</div>
+
+<div class="tier" style="top:262px">Network</div>
+<div class="box" style="left:230px; top:232px; width:1070px; height:92px"><b>AITU Wi-Fi or mobile 4G, then the Internet</b><span>DNS → HTTPS (HTTP is redirected 301, HSTS); real-time updates over the same TLS connection</span></div>
+<div class="tag enc" style="left:930px; top:334px">ENCRYPTED IN TRANSIT: TLS</div>
+
+<div class="zone cloud" style="left:230px; top:386px; width:1070px; height:640px"></div>
+<div class="zl" style="left:40px; top:590px; width:175px; font-size:17px; line-height:1.3">Google Cloud:<br>Firebase project “aitufood”<br><span class="small" style="font-weight:400">free Spark plan · no Cloud Functions, no Cloud Storage</span></div>
+
+<div class="tier" style="top:470px">Hosting and login</div>
+<div class="box" style="left:252px; top:438px; width:330px; height:118px"><b>Firebase Hosting (CDN)</b><span>React build (JS, CSS) + home page</span></div>
+<div class="box media" style="left:252px; top:572px; width:330px; height:120px"><b>Media storage = Hosting</b><span>10 category photos WebP 400/800/1200 w + JPEG, logo SVG, chime MP3 7.8 KB</span></div>
+<div class="box" style="left:625px; top:438px; width:330px; height:118px"><b>Firebase Authentication</b><span>student ID → @astanait.edu.kz + password; scrypt hash; role claim</span></div>
+<div class="tag aut" style="left:800px; top:566px">AUTHENTICATED (ID token)</div>
+
+<div class="zone auth" style="left:610px; top:600px; width:672px; height:410px"></div>
+<div class="tag aut" style="left:630px; top:608px">AUTHORISED</div>
+<div class="box grey" style="left:630px; top:642px; width:632px; height:110px; text-align:left; padding-left:18px"><b>Firestore Security Rules (21 tests)</b><span>student / staff roles · own orders · price = menu price · slot capacity · cancel only in 30 s (server clock) · no order 5 min before slot · consent required</span></div>
+
+<div class="tier" style="top:800px">Data tier</div>
+<div class="box db" style="left:630px; top:778px; width:400px; height:150px"><b>Cloud Firestore</b><span>europe-west3 (Frankfurt)<br>users · categories · menuItems · timeSlots · orders + items · auditLog · counters</span></div>
+<div class="box" style="left:1050px; top:778px; width:212px; height:150px"><b>auditLog</b><span>append-only: login, register, orders, cancel, status, menu, slots</span></div>
+<div class="tag enc" style="left:640px; top:940px">ENCRYPTED AT REST: AES-256 (Google)</div>
+<div class="zl" style="left:900px; top:980px; color:#9a3412; font-size:16px; width:370px; text-align:right">Security boundary: token + rules required</div>
+
+<div class="box" style="left:252px; top:780px; width:330px; height:120px"><b>Admin scripts (laptop)</b><span>seed, backup, restore, test results — Admin SDK + service-account key</span></div>
+<div class="tag adm" style="left:340px; top:912px">ADMIN ONLY: bypasses rules</div>
+
+<div class="tier" style="top:1080px">Outside the cloud</div>
+<div class="box" style="left:230px; top:1050px; width:340px; height:120px"><b>JSON backups</b><span>npm run backup (manual), team laptop; not in Git</span></div>
+<div class="box" style="left:590px; top:1050px; width:330px; height:120px"><b>GitHub: kamilekat/aitufood</b><span>source, rules, tests, README; no secrets</span></div>
+<div class="box plan" style="left:940px; top:1050px; width:360px; height:120px"><b>IoT pickup point (designed, not built)</b><span>ESP32-S3 + QR scanner → HTTPS → same rules, role device</span></div>
+
+<svg width="1440" height="1380" style="pointer-events:none">
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8d8f87"/></marker></defs>
+  <g stroke="#8d8f87" stroke-width="2" fill="none">
+    <line x1="395" y1="190" x2="395" y2="230" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="750" y1="190" x2="750" y2="230" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="1120" y1="190" x2="1120" y2="230" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="417" y1="324" x2="417" y2="436" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="790" y1="324" x2="790" y2="436" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="1180" y1="324" x2="1180" y2="640" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="790" y1="556" x2="790" y2="640" marker-end="url(#a)"/>
+    <line x1="830" y1="752" x2="830" y2="776" marker-end="url(#a)"/>
+    <line x1="1156" y1="752" x2="1156" y2="776" marker-end="url(#a)"/>
+    <line x1="582" y1="850" x2="628" y2="850" marker-end="url(#a)"/>
+    <line x1="300" y1="900" x2="300" y2="1048" marker-end="url(#a)"/>
+  </g>
+  <g stroke="#8d8f87" stroke-width="2" fill="none" stroke-dasharray="7 6">
+    <line x1="1120" y1="1048" x2="1120" y2="1012" marker-end="url(#a)"/>
+  </g>
+  <text x="1190" y="420" font-size="15" fill="#5b6168">Firestore SDK:</text>
+  <text x="1190" y="438" font-size="15" fill="#5b6168">reads, writes,</text>
+  <text x="1190" y="456" font-size="15" fill="#5b6168">live listeners</text>
+  <text x="310" y="1000" font-size="15" fill="#5b6168">backup.mjs</text>
+</svg>
+
+<div class="legend">
+  <span class="tag pub">PUBLIC</span> anyone can get it
+  <span class="tag enc">ENCRYPTED</span> in transit / at rest
+  <span class="tag aut">AUTHENTICATED</span> logged-in AITU user
+  <span class="tag aut">AUTHORISED</span> passed Security Rules
+  <span class="tag adm">ADMIN ONLY</span> service-account key
+  <span class="tag" style="position:static; border:2px dashed #8d8f87; color:#4b5057">DASHED</span> designed (Stage 2 D2), not built
+</div>
+</div></body></html>
